@@ -14,29 +14,35 @@ def cropAddr(string):
     port_start = string.find(':') + 1
     address = [string[IP_start:port_start - 1], int(string[port_start:]),
                 string[:IP_start - 1]]
-    print(address)
     return address
 
 def composeSipMsg(method, address):
 
-    sipmsg = method + " " + "sip:" + address[0]
+    sipmsg = method + " " + "sip:" + address[2] + '@' + address[0] \
+    + ' ' + "SIP/2.0\r\n\r\n"
+
+    return sipmsg
 
 
 def doClient(server_addr, sipmsg):
-# Contenido que vamos a enviar
-    LINE = '¡Hola mundo!'
+
 
 # Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         try:
             my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             my_socket.connect((server_addr[0], server_addr[1]))
+            LINE = composeSipMsg(sipmsg, server_addr)
             print("Enviando: " + LINE)
-            my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
-            data = my_socket.recv(1024)
-            print('Recibido -- ', data.decode('utf-8'))
-            print("Terminando socket...")
-            print("Fin.")
+            my_socket.send(bytes(LINE, 'utf-8'))
+            while True:
+                data = my_socket.recv(1024)
+                if data:
+                    print('received -- ', data.decode('utf-8'))
+                    if data.decode() == '100 TRYING\r\n180 RINGING\r\n200 OK\r\n':
+                        LINE = composeSipMsg('ACK', server_addr)
+                        my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
+                        break
 
         except (socket.gaierror, ConnectionRefusedError):
                 sys.exit('Error: Server not found')
