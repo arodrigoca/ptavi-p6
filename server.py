@@ -15,6 +15,10 @@ def composeSipAnswer(method, address):
     return sipmsg
 
 
+def sendSong(song):
+
+    print(song)
+
 class EchoHandler(socketserver.DatagramRequestHandler):
     """
     Echo server class
@@ -38,6 +42,7 @@ class EchoHandler(socketserver.DatagramRequestHandler):
         self.wfile.write(LINE)
         LINE = (composeSipAnswer('200 OK', self.client_address)+ '\r\n').encode()
         self.wfile.write(LINE)
+        sendSong(sys.argv[3])
 
 if __name__ == "__main__":
     # Creamos servidor de eco y escuchamos
