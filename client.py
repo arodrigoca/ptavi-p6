@@ -41,7 +41,7 @@ def doClient(server_addr, sipmsg):
                     print('received -- ', data.decode('utf-8'))
                     if data.decode() == '100 TRYING\r\n180 RINGING\r\n200 OK\r\n':
                         LINE = composeSipMsg('ACK', server_addr)
-                        my_socket.send(bytes(LINE, 'utf-8') + b'\r\n')
+                        my_socket.send(bytes(LINE, 'utf-8'))
                         break
 
         except (socket.gaierror, ConnectionRefusedError):
