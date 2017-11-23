@@ -42,7 +42,7 @@ def doClient(server_addr, sipmsg):
                     if data.decode() == '100 TRYING\r\n180 RINGING\r\n200 OK\r\n':
                         LINE = composeSipMsg('ACK', server_addr)
                         my_socket.send(bytes(LINE, 'utf-8'))
-                        break
+                    break
 
         except (socket.gaierror, ConnectionRefusedError):
                 sys.exit('Error: Server not found')
