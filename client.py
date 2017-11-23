@@ -33,7 +33,7 @@ def doClient(server_addr, sipmsg):
             my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             my_socket.connect((server_addr[0], server_addr[1]))
             LINE = composeSipMsg(sipmsg, server_addr)
-            print("Enviando: " + LINE)
+            print("Sending: " + LINE)
             my_socket.send(bytes(LINE, 'utf-8'))
             while True:
                 data = my_socket.recv(1024)
