@@ -6,6 +6,7 @@ Clase (y programa principal) para un servidor de eco en UDP simple
 
 import socketserver
 import sys
+import os
 
 
 def composeSipAnswer(method, address):
@@ -17,7 +18,9 @@ def composeSipAnswer(method, address):
 
 def sendSong(song):
 
-    print(song)
+    command = './mp32rtp -i 127.0.0.1 -p 23032 < ' + song
+    print(command)
+    os.system(command)
 
 class EchoHandler(socketserver.DatagramRequestHandler):
     """
