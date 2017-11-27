@@ -39,7 +39,7 @@ def doClient(server_addr, sipmsg):
                 data = my_socket.recv(1024)
                 if data:
                     print('received -- ', data.decode('utf-8'))
-                    if data.decode() == '100 TRYING\r\n180 RINGING\r\n200 OK\r\n':
+                    if data.decode() == 'SIP/2.0 100 Trying\r\n\r\nSIP/2.0 180 Ringing\r\n\r\nSIP/2.0 200 OK\r\n\r\n':
                         LINE = composeSipMsg('ACK', server_addr)
                         my_socket.send(bytes(LINE, 'utf-8'))
                     break
