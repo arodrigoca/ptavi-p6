@@ -1,15 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-"""
-Programa cliente que abre un socket a un servidor
-"""
+"""UDP client."""
 
 import socket
 import sys
 
 
 def cropAddr(string):
+    """cropAddr gets valuable information from a string.
 
+    Arguments needed are (string).
+
+    """
     IP_start = string.find('@') + 1
     port_start = string.find(':') + 1
     address = [string[IP_start:port_start - 1], int(string[port_start:]),
@@ -18,15 +20,22 @@ def cropAddr(string):
 
 
 def composeSipMsg(method, address):
+    """composeSipMsg creates a good formatted SIP message.
 
+    Arguments needed are (method, address)
+
+    """
     sipmsg = method + " " + "sip:" + address[2] + '@' + address[0] \
-              + ' ' + "SIP/2.0\r\n\r\n"
+        + ' ' + "SIP/2.0\r\n\r\n"
 
     return sipmsg
 
 
 def doClient(server_addr, sipmsg):
+    """Main function of the program. It does server-client communication.
 
+    Arguments needed are (server_addr, sipmsg)
+    """
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         try:
             my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

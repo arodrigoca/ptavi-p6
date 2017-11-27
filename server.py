@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-"""
-Clase (y programa principal) para un servidor de eco en UDP simple
-"""
+"""SIP/UDP/RTP server."""
 
 import socketserver
 import sys
@@ -10,21 +8,33 @@ import os
 
 
 def composeSipAnswer(method, address):
+    """composeSipAnswer builds a SIP message with correct format.
 
+    arguments needed are (method, address)
+
+    """
     sipmsg = method
 
     return sipmsg
 
 
 def sendSong(song):
+    """sendSong calls command to be executed by shell.
 
+    arguments needed are (song_name)
+
+    """
     command = './mp32rtp -i 127.0.0.1 -p 23032 < ' + song
     print(command)
     os.system(command)
 
 
 def checkClientMessage(msg):
+    """checkClientMessage checks if received message is correct formatted.
 
+    arguments needed are (msg)
+
+    """
     sipPart = msg[msg.find(' ')+1:]
     sipPart = [sipPart[:sipPart.find(':')+1],
                sipPart[sipPart.find(':')+1:sipPart.find('@')],
@@ -48,15 +58,13 @@ def checkClientMessage(msg):
 
 
 class EchoHandler(socketserver.DatagramRequestHandler):
-    """
-    Echo server class
-    """
+    """Echo server class."""
 
     def handle(self):
-        # Escribe dirección y puerto del cliente (de tupla client_address)
+        """handle do all the things relates do communication."""
         print('Replying to', self.client_address)
         while 1:
-            # Leyendo línea a línea lo que nos envía el cliente
+
             line = self.rfile.read()
             if line:
                 print("user sent " + line.decode('utf-8'))
