@@ -13,21 +13,20 @@ def cropAddr(string):
     IP_start = string.find('@') + 1
     port_start = string.find(':') + 1
     address = [string[IP_start:port_start - 1], int(string[port_start:]),
-                string[:IP_start - 1]]
+               string[:IP_start - 1]]
     return address
+
 
 def composeSipMsg(method, address):
 
     sipmsg = method + " " + "sip:" + address[2] + '@' + address[0] \
-    + ' ' + "SIP/2.0\r\n\r\n"
+              + ' ' + "SIP/2.0\r\n\r\n"
 
     return sipmsg
 
 
 def doClient(server_addr, sipmsg):
 
-
-# Creamos el socket, lo configuramos y lo atamos a un servidor/puerto
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as my_socket:
         try:
             my_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -39,7 +38,10 @@ def doClient(server_addr, sipmsg):
                 data = my_socket.recv(1024)
                 if data:
                     print('received -- ', data.decode('utf-8'))
-                    if data.decode() == 'SIP/2.0 100 Trying\r\n\r\nSIP/2.0 180 Ringing\r\n\r\nSIP/2.0 200 OK\r\n\r\n':
+                    okline = 'SIP/2.0 100 Trying\r\n\r\n'
+                    okline = okline + 'SIP/2.0 180 Ringing\r\n\r\n'
+                    okline = okline + 'SIP/2.0 200 OK\r\n\r\n'
+                    if data.decode() == okline:
                         LINE = composeSipMsg('ACK', server_addr)
                         my_socket.send(bytes(LINE, 'utf-8'))
                     break
